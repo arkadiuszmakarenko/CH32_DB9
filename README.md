@@ -1,3 +1,5 @@
+Work in progress.
+
 USB HID to DB9 Adapter
 It has been desigend for dual use, but primarily for MSX computers.
 
