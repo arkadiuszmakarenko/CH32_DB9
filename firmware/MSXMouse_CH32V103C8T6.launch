@@ -13,7 +13,7 @@
 <stringAttribute key="com.mounriver.debug.gdbjtag.openocd.gdbClientOtherCommands" value="set mem inaccessible-by-default off&#13;&#10;set architecture riscv:rv32&#13;&#10;set remotetimeout unlimited"/>
 <stringAttribute key="com.mounriver.debug.gdbjtag.openocd.gdbClientOtherOptions" value=""/>
 <stringAttribute key="com.mounriver.debug.gdbjtag.openocd.gdbServerConnectionAddress" value=""/>
-<stringAttribute key="com.mounriver.debug.gdbjtag.openocd.gdbServerExecutable" value="${eclipse_home}toolchain/OpenOCD/bin/${openocd_executable}"/>
+<stringAttribute key="com.mounriver.debug.gdbjtag.openocd.gdbServerExecutable" value="${eclipse_home}toolchain/OpenOCD/bin/openocd.exe"/>
 <intAttribute key="com.mounriver.debug.gdbjtag.openocd.gdbServerGdbPortNumber" value="3333"/>
 <stringAttribute key="com.mounriver.debug.gdbjtag.openocd.gdbServerLog" value=""/>
 <stringAttribute key="com.mounriver.debug.gdbjtag.openocd.gdbServerOther" value="-f &quot;${eclipse_home}toolchain/OpenOCD/bin/wch-riscv.cfg&quot;"/>

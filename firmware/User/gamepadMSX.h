@@ -4,6 +4,6 @@
 #include "USB_Host/usb_gamepad.h"
 #include "gpio.h"
 
-void ProcessGamepad(HID_gamepad_Info_TypeDef* joymap);
+void ProcessGamepadMSX(HID_gamepad_Info_TypeDef* joymap);
 
 #endif

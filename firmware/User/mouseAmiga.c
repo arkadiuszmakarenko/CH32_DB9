@@ -1,4 +1,4 @@
-#include "mouse.h"
+#include "mouseAmiga.h"
 #include "gpio.h"
 
 volatile int8_t mouseDirectionX = 0;		// X direction (0 = decrement, 1 = increment)
@@ -240,14 +240,14 @@ void ProcessY_IRQ() {
 		if (mouseEncoderPhaseY == 3)
 		{
 			GPIO_WriteBit(FV_GPIO_Port, LVQ_Pin, !(0));	// Set Y1 to 0
-		GPIO_WriteBit(LED_GPIO_Port, LED_Pin, Bit_RESET);
+		GPIO_WriteBit(LED1_GPIO_Port, LED1_Pin, Bit_RESET);
 		}
 		if (mouseEncoderPhaseY == 2)
 			GPIO_WriteBit(LVQ_GPIO_Port, FV_Pin, !(0));	// Set Y2 to 0
 		if (mouseEncoderPhaseY == 1)
 		{
 			GPIO_WriteBit(FV_GPIO_Port, LVQ_Pin, !(1));	// Set Y1 to 1
-			GPIO_WriteBit(LED_GPIO_Port, LED_Pin, Bit_SET);
+			GPIO_WriteBit(LED1_GPIO_Port, LED1_Pin, Bit_SET);
 		}
 			if (mouseEncoderPhaseY == 0)
 			GPIO_WriteBit(LVQ_GPIO_Port, FV_Pin, !(1));	// Set Y2 to 1

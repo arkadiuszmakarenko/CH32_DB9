@@ -1,5 +1,5 @@
-#ifndef __MOUSE_H
-#define __MOUSE_H
+#ifndef __MOUSEAMIGA_H
+#define __MOUSEAMIGA_H
 
 #include "stdint.h"
 #include "USB_Host/usb_mouse.h"

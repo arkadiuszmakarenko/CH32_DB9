@@ -28,10 +28,11 @@
 #include "USB_Host/usb_host_config.h"
 #include "utils.h"
 #include "tim.h"
-#include "mouse.h"
+#include "mouseAmiga.h"
+#include "mouseMSX.h"
 #include "gpio.h"
-#include "keyboard.h"
-#include "gamepad.h"
+#include "gamepadAmiga.h"
+#include "gamepadMSX.h"
 
 /*********************************************************************
  * @fn      main
@@ -40,15 +41,19 @@
  *
  * @return  none
  */
+
+
+
 int main(void)
 {
+    uint8_t CONFIG1 = 0;
+
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
     SystemCoreClockUpdate();
     Delay_Init();
-    USART_Printf_Init(9600);
-
-    DUG_PRINTF( "SystemClk:%d\r\n", SystemCoreClock );
+    USART_Printf_Init(115200);
     DUG_PRINTF( "ChipID:%08x\r\n", DBGMCU_GetCHIPID() );
+    DUG_PRINTF( "SystemClk:%d\r\n", SystemCoreClock );
     DUG_PRINTF( "USBHD HOST KM Test\r\n" );
 
     /* Initialize timer for obtaining keyboard and mouse data at regular intervals */
@@ -62,11 +67,96 @@ int main(void)
     memset( &RootHubDev.bStatus, 0, sizeof( ROOT_HUB_DEVICE ) );
     memset( &HostCtl[ DEF_USBHD_PORT_INDEX * DEF_ONE_USB_SUP_DEV_TOTAL ].InterfaceNum, 0, DEF_ONE_USB_SUP_DEV_TOTAL * sizeof( HOST_CTL ) );
 #endif
-    while( 1 )
-    {
-        USBH_MainDeal( );
+	GPIO_Config();
+	 //Read value of CONFIG1
+	CONFIG1 = GPIO_ReadInputDataBit(CONFIG1_GPIO_Port, CONFIG1_Pin);
 
 
+	DUG_PRINTF( "CONFIG1:%d\r\n", CONFIG1);
 
-    }
-}
+	while (1) {
+		USBH_MainDeal();
+
+		//Handle HID Device
+		if (RootHubDev.bType == USB_DEV_CLASS_HID) {
+
+			for (int itf = 0; itf < DEF_INTERFACE_NUM_MAX; itf++) {
+				//Handle mouse
+				if (HostCtl[0].Interface[itf].HIDRptDesc.type
+						== REPORT_TYPE_MOUSE) {
+					HID_MOUSE_Info_TypeDef *mousemap = USBH_GetMouseInfo(
+							&HostCtl[0].Interface[itf]);
+	                 if(CONFIG1)
+	                 {
+	                    ProcessMouse(mousemap);
+	                 }else
+	                 {
+	                    ProcessMouseMSX(mousemap);
+	                 }
+				}
+
+				//Handle gamepad
+				if (HostCtl[0].Interface[itf].HIDRptDesc.type
+						== REPORT_TYPE_JOYSTICK) {
+
+		HID_gamepad_Info_TypeDef *gamepad = GetGamepadInfo(
+							&HostCtl[0].Interface[itf]);
+
+		                    if(CONFIG1)
+                            {
+                                ProcessGamepadAmiga(gamepad);
+                            } else
+                            {
+                                ProcessGamepadMSX(gamepad);
+                            }
+				}
+			}
+		}
+
+		//Handle HUB Device
+
+		if (RootHubDev.bType == USB_DEV_CLASS_HUB) {
+
+			//Iterate over all devices
+			for (uint8_t device = 1; device < 5; device++)
+			{
+				//Iterate over all interfaces
+				for (int itf = 0; itf < DEF_INTERFACE_NUM_MAX; itf++) {
+					//Handle mouse
+					if (HostCtl[device].Interface[itf].HIDRptDesc.type
+							== REPORT_TYPE_MOUSE) {
+						HID_MOUSE_Info_TypeDef *mousemap = USBH_GetMouseInfo(
+								&HostCtl[device].Interface[itf]);
+
+
+                        if(CONFIG1)
+                        {
+							ProcessMouse(mousemap);
+                        }else
+                         {
+							ProcessMouseMSX(mousemap);
+                         }
+
+					}
+
+					//Handle gamepad
+					if (HostCtl[device].Interface[itf].HIDRptDesc.type
+							== REPORT_TYPE_JOYSTICK) {
+
+			HID_gamepad_Info_TypeDef *gamepad = GetGamepadInfo(
+								&HostCtl[device].Interface[itf]);
+
+			                if(CONFIG1)
+			                {
+			                    ProcessGamepadAmiga(gamepad);
+			                } else
+			                {
+			                    ProcessGamepadMSX(gamepad);
+			                }
+
+					    }
+				    }
+				}
+			}
+		}
+	}

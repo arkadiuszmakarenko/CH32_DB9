@@ -1,5 +1,5 @@
 #include "tim.h"
-#include "mouse.h"
+#include "mouseAmiga.h"
 
 void TIM2_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
 void TIM4_IRQHandler(void) __attribute__((interrupt("WCH-Interrupt-fast")));
